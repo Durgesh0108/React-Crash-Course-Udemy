@@ -2,13 +2,15 @@ import React, { useState } from "react";
 
 import MoviesList from "./components/MoviesList";
 import "./App.css";
+import { useEffect } from "react";
+import { useCallback } from "react";
 
 function App() {
 	const [movies, setMovies] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 
-	const fetchMovieHandler = async () => {
+	const fetchMovieHandler = useCallback( async () => {
 		setIsLoading(true);
 		setError(null);
 		try {
@@ -32,8 +34,12 @@ function App() {
 			setError(error.message);
 		}
 		setIsLoading(false);
-	};
+	},[]);
 
+	useEffect(() => {
+		fetchMovieHandler();
+	}, [ fetchMovieHandler ]);
+	
 	let content = <p>Found No Movies.</p>;
 
 	if (movies.length) {
@@ -53,9 +59,7 @@ function App() {
 			<section>
 				<button onClick={fetchMovieHandler}>Fetch Movies</button>
 			</section>
-			<section>
-				{content}
-			</section>
+			<section>{content}</section>
 		</React.Fragment>
 	);
 }
